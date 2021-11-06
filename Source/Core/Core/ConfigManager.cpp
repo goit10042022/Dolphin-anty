@@ -224,6 +224,7 @@ void SConfig::LoadDefaults()
 
   auto& system = Core::System::GetInstance();
   system.SetIsWii(false);
+  system.SetIsTriforce(false);
 
   ResetRunningGameMetadata();
 }
@@ -247,6 +248,7 @@ struct SetGameMetadata
   {
     *region = disc.volume->GetRegion();
     system.SetIsWii(disc.volume->GetVolumeType() == DiscIO::Platform::WiiDisc);
+    system.SetIsTriforce(disc.volume->GetVolumeType() == DiscIO::Platform::Triforce);
     config->m_disc_booted_from_game_list = true;
     config->SetRunningGameMetadata(*disc.volume, disc.volume->GetGamePartition());
     return true;
