@@ -766,6 +766,18 @@ GCPadStatus Input(int chan)
   return pad_state.status;
 }
 
+GCPadStatus PeekInput(int chan)
+{
+  std::lock_guard lk(s_read_mutex);
+  return s_port_states[chan].status;
+}
+
+GCPadStatus GetOrigin(int chan)
+{
+  std::lock_guard lk(s_read_mutex);
+  return s_port_states[chan].origin;
+}
+
 // Get ControllerType from first byte in input payload.
 static ControllerType IdentifyControllerType(u8 data)
 {
