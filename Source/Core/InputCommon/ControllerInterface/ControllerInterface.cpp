@@ -87,6 +87,7 @@ void ControllerInterface::Initialize(const WindowSystemInfo& wsi)
   m_input_backends.emplace_back(ciface::SteamDeck::CreateInputBackend(this));
 #endif
 
+  // TODO: obey Config::Get(Config::MAIN_USE_GC_ADAPTER_FOR_CONTROLLER_INTERFACE)
   m_input_backends.emplace_back(ciface::GCAdapter::CreateInputBackend(this));
 
   // Don't allow backends to add devices before the first RefreshDevices() as they will be cleaned
