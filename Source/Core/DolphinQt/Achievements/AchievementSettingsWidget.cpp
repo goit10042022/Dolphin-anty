@@ -285,17 +285,6 @@ void AchievementSettingsWidget::Logout()
 
 void AchievementSettingsWidget::ToggleHardcore()
 {
-  if (Config::Get(Config::RA_HARDCORE_ENABLED))
-  {
-    auto confirm = ModalMessageBox::question(
-        this, tr("Confirm Hardcore Off"), tr("Are you sure you want to turn hardcore mode off?"),
-        QMessageBox::Yes | QMessageBox::No, QMessageBox::NoButton, Qt::ApplicationModal);
-    if (confirm != QMessageBox::Yes)
-    {
-      SignalBlocking(m_common_hardcore_enabled_input)->setChecked(true);
-      return;
-    }
-  }
   SaveSettings();
   UpdateHardcoreMode();
 }

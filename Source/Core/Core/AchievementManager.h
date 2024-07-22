@@ -172,6 +172,10 @@ public:
   {
     m_dev_menu_callback = callback;
   };
+  void SetHardcoreCallback(std::function<void(void)> callback)
+  {
+    m_hardcore_callback = callback;
+  };
 #endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
 
   void DoState(PointerWrap& p);
@@ -249,6 +253,8 @@ private:
 #ifdef RC_CLIENT_SUPPORTS_RAINTEGRATION
   static void LoadIntegrationCallback(int result, const char* error_message, rc_client_t* client,
                                       void* userdata);
+  static void RAIntegrationEventHandler(const rc_client_raintegration_event_t* event,
+                                        rc_client_t* client);
 #endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
 
   rc_runtime_t m_runtime{};
@@ -286,6 +292,7 @@ private:
   bool m_dll_found = false;
 #ifdef RC_CLIENT_SUPPORTS_RAINTEGRATION
   std::function<void(void)> m_dev_menu_callback;
+  std::function<void(void)> m_hardcore_callback;
 #endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
 
   Common::WorkQueueThread<std::function<void()>> m_queue;
