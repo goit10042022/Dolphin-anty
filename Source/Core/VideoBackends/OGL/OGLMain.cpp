@@ -135,6 +135,7 @@ bool VideoBackend::FillBackendInfo(GLContext* context)
   g_Config.backend_info.bSupportsPartialMultisampleResolve = true;
   // Unneccessary since OGL doesn't use pipelines
   g_Config.backend_info.bSupportsDynamicVertexLoader = false;
+  g_Config.backend_info.bSupportsUnrestrictedDepthRange = false;
 
   // TODO: There is a bug here, if texel buffers or SSBOs/atomics are not supported the graphics
   // options will show the option when it is not supported. The only way around this would be

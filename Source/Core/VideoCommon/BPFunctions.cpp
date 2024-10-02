@@ -203,8 +203,8 @@ void SetScissorAndViewport()
   float y = g_framebuffer_manager->EFBToScaledYf(raw_y);
   float width = g_framebuffer_manager->EFBToScaledXf(raw_width);
   float height = g_framebuffer_manager->EFBToScaledYf(raw_height);
-  float min_depth = (xfmem.viewport.farZ - xfmem.viewport.zRange) / 16777216.0f;
-  float max_depth = xfmem.viewport.farZ / 16777216.0f;
+  float min_depth = (xfmem.viewport.farZ - xfmem.viewport.zRange);
+  float max_depth = xfmem.viewport.farZ;
   if (width < 0.f)
   {
     x += width;
@@ -214,6 +214,11 @@ void SetScissorAndViewport()
   {
     y += height;
     height *= -1;
+  }
+  if (!g_ActiveConfig.backend_info.bSupportsUnrestrictedDepthRange)
+  {
+    min_depth = min_depth / 16777216.0f;
+    max_depth = max_depth / 16777216.0f;
   }
 
   // The maximum depth that is written to the depth buffer should never exceed this value.
