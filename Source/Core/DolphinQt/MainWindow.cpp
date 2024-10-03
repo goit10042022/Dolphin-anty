@@ -838,8 +838,7 @@ void MainWindow::Play(const std::optional<std::string>& savestate_path)
   }
   else
   {
-    std::shared_ptr<const UICommon::GameFile> selection = m_game_list->GetSelectedGame();
-    if (selection)
+    if (std::shared_ptr<const UICommon::GameFile> selection = m_game_list->GetSelectedGame())
     {
       StartGame(selection->GetFilePath(), ScanForSecondDisc::Yes,
                 std::make_unique<BootSessionData>(savestate_path, DeleteSavestateAfterBoot::No));
@@ -1954,8 +1953,7 @@ void MainWindow::OnActivateChat()
 
 void MainWindow::OnRequestGolfControl()
 {
-  auto client = Settings::Instance().GetNetPlayClient();
-  if (client)
+  if (auto client = Settings::Instance().GetNetPlayClient())
     client->RequestGolfControl();
 }
 
