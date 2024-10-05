@@ -215,17 +215,12 @@ void SetScissorAndViewport()
     y += height;
     height *= -1;
   }
-  if (!g_ActiveConfig.backend_info.bSupportsUnrestrictedDepthRange)
-  {
-    min_depth = min_depth / 16777216.0f;
-    max_depth = max_depth / 16777216.0f;
-  }
 
   // The maximum depth that is written to the depth buffer should never exceed this value.
   // This is necessary because we use a 2^24 divisor for all our depth values to prevent
   // floating-point round-trip errors. However the console GPU doesn't ever write a value
   // to the depth buffer that exceeds 2^24 - 1.
-  constexpr float GX_MAX_DEPTH = 16777215.0f / 16777216.0f;
+  constexpr float GX_MAX_DEPTH = 16777215.0f;
   if (!g_ActiveConfig.backend_info.bSupportsDepthClamp)
   {
     // There's no way to support oversized depth ranges in this situation. Let's just clamp the
@@ -248,6 +243,12 @@ void SetScissorAndViewport()
       min_depth = 0.0f;
       max_depth = GX_MAX_DEPTH;
     }
+  }
+
+  if (!g_ActiveConfig.backend_info.bSupportsUnrestrictedDepthRange)
+  {
+    min_depth /= 16777216.0f;
+    max_depth /= 16777216.0f;
   }
 
   float near_depth, far_depth;

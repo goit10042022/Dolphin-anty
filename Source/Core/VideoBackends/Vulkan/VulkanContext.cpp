@@ -472,6 +472,7 @@ void VulkanContext::PopulateBackendInfo(VideoConfig* config)
   config->backend_info.bSupportsVSLinePointExpand = true;          // Assumed support.
   config->backend_info.bSupportsHDROutput = true;                  // Assumed support.
   config->backend_info.bSupportsUnrestrictedDepthRange = false;    // Dependent on features.
+  config->backend_info.bSupportsDepthClampControl = false;         // Dependent on features.
 }
 
 void VulkanContext::PopulateBackendInfoAdapters(VideoConfig* config, const GPUList& gpu_list)
@@ -677,12 +678,9 @@ bool VulkanContext::SelectDeviceExtensions(bool enable_surface)
   AddExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME, false);
   AddExtension(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME, false);
 
-  // Enabling the depth clamp control extension is harmless, but we need to ensure
-  // we don't enable the unrestricted depth range extension unless we can actually
-  // make use of it.
-  g_Config.backend_info.bSupportsUnrestrictedDepthRange =
-      AddExtension(VK_EXT_DEPTH_CLAMP_CONTROL_EXTENSION_NAME, false) &&
-      AddExtension(VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME, false);
+  g_Config.backend_info.bSupportsUnrestrictedDepthRange = AddExtension(VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME, false);
+  if (g_Config.backend_info.bSupportsUnrestrictedDepthRange)
+    g_Config.backend_info.bSupportsDepthClampControl = AddExtension(VK_EXT_DEPTH_CLAMP_CONTROL_EXTENSION_NAME, false);
 
   return true;
 }

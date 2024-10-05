@@ -432,27 +432,27 @@ float3 load_input_float3_rawtex(uint vtx_offset, uint attr_offset) {{
   // if not then early z culling will improve speed.
   //
   // The depth range can also be oversized beyond the range supported by the depth buffer. The final
-  // depth value will still be clamped to the 0..1 range, so these games effectively add a depth
-  // bias to the values written to the depth buffer.
+  // depth value will still be clamped to the 0..2^24-1 range, so these games effectively add a
+  // depth bias to the values written to the depth buffer.
+  //
+  // If an unrestricted depth range is supported then we can let host driver handle the oversized
+  // depth range. This can only work if the host driver also supports a feature to allow us to
+  // clamp any depth values that are beyond the supported 0..2^24-1 of the depth buffer.
+  //
+  // If only a depth range of 0..1 is supported then we process the depth equation in the vertex
+  // shader and handle the depth clamp by setting the depth range to 0..(2^24-1)/(2^24).
+  //
+  // If the depth range is not oversized or when we let the host driver handle the oversized depth
+  // range then the constants in this equation will be set so that z = -z.
+  out.Write("o.pos.z = o.pos.w * " I_PIXELCENTERCORRECTION ".w - "
+            "o.pos.z * " I_PIXELCENTERCORRECTION ".z;\n");
+
   if (host_config.backend_unrestricted_depth_range)
   {
-    // If an unrestricted depth range is supported then we let host driver handle the oversized
-    // depth range. This can only work if the host driver also supports a feature to allow us to
-    // clamp any depth values that are beyond the supported 0..2^24-1 of the depth buffer.
-    // On top of that we also get rid of any normalization to further avoid rounding errors.
-    //
-    // Getting rid of the normalization additionally allows us to add a small depth bias to
-    // influence rounding behaviour since the console expects the depth value to be truncated
-    // before being added to the far value of the depth range.
-    out.Write("o.pos.z = -o.pos.z + (0.5 / 16777216.0);\n");
-  }
-  else
-  {
-    // If only a depth range of 0..1 is supported then we process the depth equation in the vertex
-    // shader and handle the depth clamp by setting the depth range to 0..(2^24-1)/(2^24).
-    // If the depth range is not oversized then this equation will be set to so that z = -z.
-    out.Write("o.pos.z = o.pos.w * " I_PIXELCENTERCORRECTION ".w - "
-              "o.pos.z * " I_PIXELCENTERCORRECTION ".z;\n");
+    // If we don't use normalization then we can add a small depth bias to influence rounding
+    // behaviour since the console expects the depth value to be truncated before being added
+    // to the far value of the depth range.
+    out.Write("o.pos.z += (0.5 / 16777216.0);\n");
   }
 
   if (!host_config.backend_clip_control)
