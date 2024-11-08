@@ -10,10 +10,9 @@
 #include "InputCommon/GCAdapter.h"
 #include "InputCommon/GCPadStatus.h"
 
-// TODO: name?
+// TODO: namespace name matching the one in InputCommon/GCAdapter.h is annoying
 namespace ciface::GCAdapter
 {
-// TODO: name?
 constexpr auto SOURCE_NAME = "GCAdapter";
 
 class GCController;
@@ -150,7 +149,7 @@ public:
 
     m_last_state = new_state;
 
-    GCAdapter::Output(m_index, new_state);
+    ::GCAdapter::Output(m_index, new_state);
   }
 
   std::string GetName() const override { return "Motor"; }
@@ -170,7 +169,7 @@ public:
       AddInput(new DigitalInput{&m_pad_status.button, i});
 
     // TODO: use origin values.
-    const auto origin = GCAdapter::GetOrigin(index);
+    const auto origin = ::GCAdapter::GetOrigin(index);
 
     // Add sticks.
     for (auto& props : stick_inputs)
@@ -204,7 +203,7 @@ public:
 
   Core::DeviceRemoval UpdateInput() override
   {
-    m_pad_status = GCAdapter::PeekInput(m_index);
+    m_pad_status = ::GCAdapter::PeekInput(m_index);
     return Core::DeviceRemoval::Keep;
   }
 
@@ -216,14 +215,14 @@ private:
 InputBackend::InputBackend(ControllerInterface* controller_interface)
     : ciface::InputBackend(controller_interface)
 {
-  GCAdapter::Init();
+  ::GCAdapter::Init();
 }
 
 void InputBackend::PopulateDevices()
 {
   for (int i = 0; i != SerialInterface::MAX_SI_CHANNELS; ++i)
   {
-    if (GCAdapter::DeviceConnected(i))
+    if (::GCAdapter::DeviceConnected(i))
     {
       auto new_device = std::make_shared<GCController>(i);
       m_devices[i] = new_device;
@@ -237,7 +236,7 @@ void InputBackend::UpdateInput(std::vector<std::weak_ptr<ciface::Core::Device>>&
   // "Hotplug" is handled here.
   for (int i = 0; i != SerialInterface::MAX_SI_CHANNELS; ++i)
   {
-    const bool is_device_connected = GCAdapter::DeviceConnected(i);
+    const bool is_device_connected = ::GCAdapter::DeviceConnected(i);
     const auto device = m_devices[i].lock();
 
     if (is_device_connected == (device != nullptr))
