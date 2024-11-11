@@ -58,6 +58,8 @@ std::tuple<std::string, std::string, std::string> CWDemangler::parse_qualifiers(
 {
   std::string pre = "";
   std::string post = "";
+  int index = 0;
+
   for (char c : str)
   {
     bool foundNonQualifier = false;
@@ -105,8 +107,9 @@ std::tuple<std::string, std::string, std::string> CWDemangler::parse_qualifiers(
 
     if (foundNonQualifier)
       break;
-    str = str.substr(1);
+    index++;
   }
+  str = str.substr(index);
   post = StripWhitespaceEnd(post);
   return {pre, post, str};
 }
@@ -236,7 +239,7 @@ CWDemangler::demangle_qualified_name(std::string str, DemangleOptions options)
       return {};
     }
 
-    int count;
+    int count = 0;
 
     if (!(std::istringstream(str.substr(1,1)) >> count))
       return {};
@@ -416,8 +419,8 @@ CWDemangler::demangle_arg(std::string str, DemangleOptions options)
     std::string ret_pre, ret_post;
     std::tie(ret_pre, ret_post, rest) = demangleArgResult.value();
     std::string const_str = const_member ? " const" : "";
-    std::string res_pre = fmt::format("{} ({}{})", ret_pre, pre, post);
-    std::string res_post = fmt::format(")({}){}{}", res_pre, res_post, rest);
+    std::string res_pre = fmt::format("{} ({}{}", ret_pre, pre, post);
+    std::string res_post = fmt::format(")({}){}{}", args, const_str, ret_post);
     return {{res_pre, res_post, rest}};
   }
 
@@ -509,7 +512,7 @@ CWDemangler::demangle_arg(std::string str, DemangleOptions options)
 
   result += post;
   return {{result, "", str.substr(1)}};
-  }
+}
 
 std::optional<std::tuple<std::string, std::string>>
 CWDemangler::demangle_function_args(std::string str, DemangleOptions options)
