@@ -321,11 +321,19 @@ void AchievementManager::DoFrame()
   if (!IsGameLoaded() || !Core::IsCPUThread())
     return;
   {
-    std::lock_guard lg{m_lock};
 #ifdef RC_CLIENT_SUPPORTS_RAINTEGRATION
-    Core::System::GetInstance().GetMemory().CopyFromEmu(m_cloned_memory.data(), 0x80000000U,
-                                                        m_cloned_memory.size());
+    {
+      std::lock_guard lg{m_memory_lock};
+      auto& system = Core::System::GetInstance();
+      Core::CPUThreadGuard threadguard(system);
+      u32 memory_bank_size = Core::System::GetInstance().GetMemory().GetRamSizeReal();
+      if (m_cloned_memory.size() != memory_bank_size)
+        m_cloned_memory.resize(memory_bank_size);
+      Core::System::GetInstance().GetMemory().CopyFromEmu(m_cloned_memory.data(), 0x80000000U,
+                                                          m_cloned_memory.size());
+    }
 #endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
+    std::lock_guard lg{m_lock};
     rc_client_do_frame(m_client);
   }
   Core::System* system = m_system.load(std::memory_order_acquire);
@@ -1300,19 +1308,19 @@ u32 AchievementManager::MemoryPeeker(u32 address, u8* buffer, u32 num_bytes, rc_
 {
   if (buffer == nullptr)
     return 0u;
+#ifdef RC_CLIENT_SUPPORTS_RAINTEGRATION
+  auto& instance = AchievementManager::GetInstance();
+  std::lock_guard lg{instance.m_memory_lock};
+  u32 bytes_read = 0;
+  for (u32 ix = address; ix < address + num_bytes && ix < instance.m_cloned_memory.size(); ix++)
+    buffer[bytes_read++] = instance.m_cloned_memory[ix];
+  return bytes_read;
+#else   // RC_CLIENT_SUPPORTS_RAINTEGRATION
   auto& system = Core::System::GetInstance();
   if (!(Core::IsHostThread() || Core::IsCPUThread()))
   {
-#ifdef RC_CLIENT_SUPPORTS_RAINTEGRATION
-    auto& instance = AchievementManager::GetInstance();
-    u32 bytes_read = 0;
-    for (u32 ix = address; ix < address + num_bytes && ix < instance.m_cloned_memory.size(); ix++)
-      buffer[bytes_read++] = instance.m_cloned_memory[ix];
-    return bytes_read;
-#else   // RC_CLIENT_SUPPORTS_RAINTEGRATION
     ASSERT_MSG(ACHIEVEMENTS, false, "MemoryPeeker called from wrong thread");
     return 0;
-#endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
   }
   Core::CPUThreadGuard threadguard(system);
   for (u32 num_read = 0; num_read < num_bytes; num_read++)
@@ -1324,6 +1332,7 @@ u32 AchievementManager::MemoryPeeker(u32 address, u8* buffer, u32 num_bytes, rc_
     buffer[num_read] = value.value().value;
   }
   return num_bytes;
+#endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
 }
 
 void AchievementManager::FetchBadge(AchievementManager::Badge* badge, u32 badge_type,

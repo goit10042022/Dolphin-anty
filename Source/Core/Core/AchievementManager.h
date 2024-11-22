@@ -295,6 +295,7 @@ private:
   std::function<void(void)> m_hardcore_callback;
   std::vector<u8> m_cloned_memory;
   std::string m_title_estimate;
+  std::recursive_mutex m_memory_lock;
 #endif  // RC_CLIENT_SUPPORTS_RAINTEGRATION
 
   Common::WorkQueueThread<std::function<void()>> m_queue;
