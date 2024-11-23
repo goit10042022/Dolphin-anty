@@ -1527,10 +1527,7 @@ void AchievementManager::RAIntegrationEventHandler(const rc_client_raintegration
     break;
   case RC_CLIENT_RAINTEGRATION_EVENT_PAUSE:
   {
-    Core::System* system = instance.m_system.load(std::memory_order_acquire);
-    if (!system)
-      return;
-    Core::SetState(*system, Core::State::Paused);
+    Core::QueueHostJob([](Core::System& system) { Core::SetState(system, Core::State::Paused); });
     break;
   }
   case RC_CLIENT_RAINTEGRATION_EVENT_HARDCORE_CHANGED:
