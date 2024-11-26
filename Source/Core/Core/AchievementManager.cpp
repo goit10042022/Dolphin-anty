@@ -1551,14 +1551,19 @@ void AchievementManager::MemoryPoker(u32 address, u8* buffer, u32 num_bytes, rc_
     Core::QueueHostJob([address, buffer, num_bytes, client](Core::System& system) {
       MemoryPoker(address, buffer, num_bytes, client);
     });
+    return;
   }
   Core::CPUThreadGuard threadguard(system);
+  auto& instance = AchievementManager::GetInstance();
+  std::lock_guard lg{instance.m_memory_lock};
   for (u32 num_write = 0; num_write < num_bytes; num_write++)
   {
     system.GetMMU().HostTryWriteU8(threadguard, buffer[num_write], address + num_write,
                                    PowerPC::RequestedAddressSpace::Physical);
+    instance.m_cloned_memory[address + num_write] = buffer[num_write];
   }
 }
+
 void AchievementManager::GameTitleEstimateHandler(char* buffer, u32 buffer_size,
                                                   rc_client_t* client)
 {
