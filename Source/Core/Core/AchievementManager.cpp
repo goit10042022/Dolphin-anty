@@ -1522,6 +1522,7 @@ void AchievementManager::RAIntegrationEventHandler(const rc_client_raintegration
   auto& instance = AchievementManager::GetInstance();
   switch (event->type)
   {
+  case RC_CLIENT_RAINTEGRATION_EVENT_MENU_CHANGED:
   case RC_CLIENT_RAINTEGRATION_EVENT_MENUITEM_CHECKED_CHANGED:
     instance.m_dev_menu_callback();
     break;
