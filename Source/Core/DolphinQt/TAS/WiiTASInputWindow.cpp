@@ -347,31 +347,6 @@ WiiTASInputWindow::WiiTASInputWindow(QWidget* parent, int num) : TASInputWindow(
   layout->addWidget(m_settings_box);
 
   setLayout(layout);
-
-  if (Core::IsRunning(Core::System::GetInstance()))
-  {
-    m_active_extension = GetWiimote()->GetActiveExtensionNumber();
-    m_is_motion_plus_attached = GetWiimote()->IsMotionPlusAttached();
-  }
-  else
-  {
-    Common::IniFile ini;
-    ini.Load(File::GetUserPath(D_CONFIG_IDX) + "WiimoteNew.ini");
-    const std::string section_name = "Wiimote" + std::to_string(num + 1);
-
-    std::string extension;
-    ini.GetIfExists(section_name, "Extension", &extension);
-
-    if (extension == "Nunchuk")
-      m_active_extension = WiimoteEmu::ExtensionNumber::NUNCHUK;
-    else if (extension == "Classic")
-      m_active_extension = WiimoteEmu::ExtensionNumber::CLASSIC;
-    else
-      m_active_extension = WiimoteEmu::ExtensionNumber::NONE;
-
-    m_is_motion_plus_attached = true;
-    ini.GetIfExists(section_name, "Extension/Attach MotionPlus", &m_is_motion_plus_attached);
-  }
   UpdateExt();
 }
 
@@ -390,6 +365,34 @@ WiimoteEmu::Extension* WiiTASInputWindow::GetExtension()
 {
   return static_cast<WiimoteEmu::Extension*>(
       GetAttachments()->GetAttachmentList()[m_active_extension].get());
+}
+
+void WiiTASInputWindow::LoadExtensionAndMotionPlus()
+{
+  if (Core::IsRunning(Core::System::GetInstance()))
+  {
+    m_active_extension = GetWiimote()->GetActiveExtensionNumber();
+    m_is_motion_plus_attached = GetWiimote()->IsMotionPlusAttached();
+  }
+  else
+  {
+    Common::IniFile ini;
+    ini.Load(File::GetUserPath(D_CONFIG_IDX) + "WiimoteNew.ini");
+    const std::string section_name = "Wiimote" + std::to_string(m_num + 1);
+
+    std::string extension;
+    ini.GetIfExists(section_name, "Extension", &extension);
+
+    if (extension == "Nunchuk")
+      m_active_extension = WiimoteEmu::ExtensionNumber::NUNCHUK;
+    else if (extension == "Classic")
+      m_active_extension = WiimoteEmu::ExtensionNumber::CLASSIC;
+    else
+      m_active_extension = WiimoteEmu::ExtensionNumber::NONE;
+
+    m_is_motion_plus_attached = true;
+    ini.GetIfExists(section_name, "Extension/Attach MotionPlus", &m_is_motion_plus_attached);
+  }
 }
 
 void WiiTASInputWindow::UpdateExt()

@@ -40,6 +40,7 @@ private:
   WiimoteEmu::Extension* GetExtension();
 
   void UpdateExt();
+  void LoadExtensionAndMotionPlus();
 
   WiimoteEmu::ExtensionNumber m_active_extension;
   bool m_is_motion_plus_attached;
