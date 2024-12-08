@@ -309,19 +309,26 @@ s32 SDIOSlot0Device::ExecuteCommand(const Request& request, u32 buffer_in, u32 b
     INFO_LOG_FMT(IOS_SD, "{}Write {} Block(s) from {:#010x} bsize {} to offset {:#010x}!",
                  req.isDMA ? "DMA " : "", req.blocks, req.addr, req.bsize, req.arg);
 
-    if (m_card && Config::Get(Config::MAIN_ALLOW_SD_WRITES))
+    if (m_card)
     {
-      const u32 size = req.bsize * req.blocks;
-      const u64 address = GetAddressFromRequest(req.arg);
-
-      if (!m_card.Seek(address, File::SeekOrigin::Begin))
-        ERROR_LOG_FMT(IOS_SD, "Seek failed");
-
-      if (!m_card.WriteBytes(memory.GetPointerForRange(req.addr, size), size))
+      if (Config::Get(Config::MAIN_ALLOW_SD_WRITES))
       {
-        ERROR_LOG_FMT(IOS_SD, "Write Failed - error: {}, eof: {}", std::ferror(m_card.GetHandle()),
-                      std::feof(m_card.GetHandle()));
-        ret = RET_FAIL;
+        const u32 size = req.bsize * req.blocks;
+        const u64 address = GetAddressFromRequest(req.arg);
+
+        if (!m_card.Seek(address, File::SeekOrigin::Begin))
+          ERROR_LOG_FMT(IOS_SD, "Seek failed");
+
+        if (!m_card.WriteBytes(memory.GetPointerForRange(req.addr, size), size))
+        {
+          ERROR_LOG_FMT(IOS_SD, "Write Failed - error: {}, eof: {}",
+                        std::ferror(m_card.GetHandle()), std::feof(m_card.GetHandle()));
+          ret = RET_FAIL;
+        }
+      }
+      else
+      {
+        ret = -10;
       }
     }
   }
