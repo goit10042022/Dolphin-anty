@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <string>
 #include <tuple>
 
 #include "Common/CommonTypes.h"
