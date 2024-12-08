@@ -80,7 +80,8 @@
     </ParameterGroup>
     <Task>
       <Using Namespace="System.Diagnostics"/>
-      <Code Type="Fragment" Language="cs"><![CDATA[
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
           ProductVersion = FileVersionInfo.GetVersionInfo(Path).ProductVersion;
         ]]>
       </Code>
@@ -93,7 +94,7 @@
     <Message Text="VCToolsProductVersion $(VCToolsProductVersion)" Importance="High" />
     <WriteLinesToFile
       File="$(BuildInfoOutput)"
-    Lines="$([System.IO.File]::ReadAllText($(BuildInfoTemplate)).Replace('${VC_TOOLS_VERSION}', $(VCToolsProductVersion)))"
+      Lines="$([System.IO.File]::ReadAllText($(BuildInfoTemplate)).Replace('${VC_TOOLS_VERSION}', $(VCToolsProductVersion)))"
       Overwrite="true"
     />
   </Target>
