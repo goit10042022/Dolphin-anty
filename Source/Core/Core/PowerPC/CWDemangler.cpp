@@ -144,7 +144,7 @@ CWDemangler::demangle_template_args(std::string str, DemangleOptions options)
     }
 
     std::string args = str.substr(start_idx + 1, end_idx - (start_idx + 1));
-    str = str.substr(0, start_idx);
+    str.resize(start_idx);
     tmpl_args = "<";
 
     while (args != "")
