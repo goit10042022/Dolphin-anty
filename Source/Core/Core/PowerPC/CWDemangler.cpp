@@ -92,10 +92,10 @@ std::tuple<std::string, std::string, std::string> CWDemangler::parse_qualifiers(
   return {pre, post, str};
 }
 
-std::optional<std::tuple<int, std::string>> CWDemangler::parse_digits(std::string str)
+std::optional<std::tuple<size_t, std::string>> CWDemangler::parse_digits(std::string str)
 {
   bool containsNonDigit = false;
-  int idx = 0;
+  size_t idx = 0;
   while (idx < str.length())
   {
     if (!std::isdigit(str[idx]))
@@ -106,7 +106,7 @@ std::optional<std::tuple<int, std::string>> CWDemangler::parse_digits(std::strin
     idx++;
   }
 
-  int val = 0;
+  size_t val = 0;
 
   if (containsNonDigit)
   {
@@ -189,7 +189,7 @@ CWDemangler::demangle_name(std::string str, DemangleOptions options)
   if (!result)
     return {};
 
-  int size;
+  size_t size;
   std::string rest;
   std::tie(size, rest) = result.value();
 

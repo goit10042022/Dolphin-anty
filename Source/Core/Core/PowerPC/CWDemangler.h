@@ -60,6 +60,6 @@ private:
   }
 
   static std::tuple<std::string, std::string, std::string> parse_qualifiers(std::string str);
-  static std::optional<std::tuple<int, std::string>> parse_digits(std::string str);
+  static std::optional<std::tuple<size_t, std::string>> parse_digits(std::string str);
   static std::optional<size_t> find_split(std::string s, bool special, DemangleOptions options);
 };
