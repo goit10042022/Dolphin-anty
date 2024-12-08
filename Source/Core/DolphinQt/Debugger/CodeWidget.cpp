@@ -454,8 +454,8 @@ void CodeWidget::UpdateFunctionCallers(const Common::Symbol* symbol)
 
       if (!caller_symbol->object_name.empty())
       {
-        name = QString::fromStdString(fmt::format("< {} ({}, {:08x})", symbol_name,
-                                                  caller_symbol->object_name, addr));
+        name = QString::fromStdString(
+            fmt::format("< {} ({}, {:08x})", symbol_name, caller_symbol->object_name, addr));
       }
       else
       {

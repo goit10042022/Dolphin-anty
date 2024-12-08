@@ -9,50 +9,28 @@
 #include "common/StringUtil.h"
 
 static const std::map<std::string, std::string> operators = {
-  {"nw", "operator new"},
-  {"nwa", "operator new[]"},
-  {"dl", "operator delete"},
-  {"dla", "operator delete[]"},
-  {"pl", "operator+"},
-  {"mi", "operator-"},
-  {"ml", "operator*"},
-  {"dv", "operator/"},
-  {"md", "operator%"},
-  {"er", "operator^"},
-  {"ad", "operator&"},
-  {"or", "operator|"},
-  {"co", "operator~"},
-  {"nt", "operator!"},
-  {"as", "operator="},
-  {"lt", "operator<"},
-  {"gt", "operator>"},
-  {"apl", "operator+="},
-  {"ami", "operator-="},
-  {"amu", "operator*="},
-  {"adv", "operator/="},
-  {"amd", "operator%="},
-  {"aer", "operator^="},
-  {"aad", "operator&="},
-  {"aor", "operator|="},
-  {"ls", "operator<<"},
-  {"rs", "operator>>"},
-  {"ars", "operator>>="},
-  {"als", "operator<<="},
-  {"eq", "operator=="},
-  {"ne", "operator!="},
-  {"le", "operator<="},
-  {"ge", "operator>="},
-  {"aa", "operator&&"},
-  {"oo", "operator||"},
-  {"pp", "operator++"},
-  {"mm", "operator--"},
-  {"cm", "operator,"},
-  {"rm", "operator->*"},
-  {"rf", "operator->"},
-  {"cl", "operator()"},
-  {"vc", "operator[]"},
-  {"vt", "__vtable"}
-};
+    {"nw", "operator new"},    {"nwa", "operator new[]"},
+    {"dl", "operator delete"}, {"dla", "operator delete[]"},
+    {"pl", "operator+"},       {"mi", "operator-"},
+    {"ml", "operator*"},       {"dv", "operator/"},
+    {"md", "operator%"},       {"er", "operator^"},
+    {"ad", "operator&"},       {"or", "operator|"},
+    {"co", "operator~"},       {"nt", "operator!"},
+    {"as", "operator="},       {"lt", "operator<"},
+    {"gt", "operator>"},       {"apl", "operator+="},
+    {"ami", "operator-="},     {"amu", "operator*="},
+    {"adv", "operator/="},     {"amd", "operator%="},
+    {"aer", "operator^="},     {"aad", "operator&="},
+    {"aor", "operator|="},     {"ls", "operator<<"},
+    {"rs", "operator>>"},      {"ars", "operator>>="},
+    {"als", "operator<<="},    {"eq", "operator=="},
+    {"ne", "operator!="},      {"le", "operator<="},
+    {"ge", "operator>="},      {"aa", "operator&&"},
+    {"oo", "operator||"},      {"pp", "operator++"},
+    {"mm", "operator--"},      {"cm", "operator,"},
+    {"rm", "operator->*"},     {"rf", "operator->"},
+    {"cl", "operator()"},      {"vc", "operator[]"},
+    {"vt", "__vtable"}};
 
 std::tuple<std::string, std::string, std::string> CWDemangler::parse_qualifiers(std::string str)
 {
@@ -241,7 +219,7 @@ CWDemangler::demangle_qualified_name(std::string str, DemangleOptions options)
 
     int count = 0;
 
-    if (!(std::istringstream(str.substr(1,1)) >> count))
+    if (!(std::istringstream(str.substr(1, 1)) >> count))
       return {};
     str = str.substr(2);
 
@@ -547,7 +525,9 @@ CWDemangler::demangle_function_args(std::string str, DemangleOptions options)
   return {{result, str}};
 }
 
-std::optional<std::string> CWDemangler::demangle_special_function(std::string str, std::string class_name, DemangleOptions options)
+std::optional<std::string> CWDemangler::demangle_special_function(std::string str,
+                                                                  std::string class_name,
+                                                                  DemangleOptions options)
 {
   if (str.starts_with("op"))
   {
@@ -808,8 +788,7 @@ std::optional<std::string> CWDemangler::demangle(std::string str, DemangleOption
 
 /// Finds the first double underscore in the string, excluding any that are part of a
 /// template argument list or operator name.
-std::optional<size_t> CWDemangler::find_split(std::string s, bool special,
-                                                  DemangleOptions options)
+std::optional<size_t> CWDemangler::find_split(std::string s, bool special, DemangleOptions options)
 {
   size_t start = 0;
 

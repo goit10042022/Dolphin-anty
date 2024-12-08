@@ -37,7 +37,8 @@ void DoDemangleQualifiedNameTest(std::string mangled, std::string baseName, std:
   EXPECT_EQ(result, expected);
 }
 
-void DoDemangleArgTest(std::string mangled, std::string typePre, std::string typePost, std::string remainder)
+void DoDemangleArgTest(std::string mangled, std::string typePre, std::string typePost,
+                       std::string remainder)
 {
   DemangleOptions options = DemangleOptions();
 
@@ -70,7 +71,8 @@ void DoDemangleTest(std::string mangled, std::string demangled)
   EXPECT_EQ(result, expected);
 }
 
-void DoDemangleOptionsTest(bool omitEmptyParams, bool mwExtensions, std::string mangled, std::string demangled)
+void DoDemangleOptionsTest(bool omitEmptyParams, bool mwExtensions, std::string mangled,
+                           std::string demangled)
 {
   DemangleOptions options = DemangleOptions(omitEmptyParams, mwExtensions);
 
@@ -84,8 +86,8 @@ TEST(CWDemangler, TestDemangleTemplateArgs)
 {
   DoDemangleTemplateArgsTest("single_ptr<10CModelData>", "single_ptr", "<CModelData>");
   DoDemangleTemplateArgsTest("basic_string<w,Q24rstl14char_traits<w>,Q24rstl17rmemory_allocator>",
-                            "basic_string",
-                            "<wchar_t, rstl::char_traits<wchar_t>, rstl::rmemory_allocator>");
+                             "basic_string",
+                             "<wchar_t, rstl::char_traits<wchar_t>, rstl::rmemory_allocator>");
 }
 
 TEST(CWDemangler, TestDemangleName)
@@ -438,6 +440,3 @@ TEST(CWDemangler, TestDemangleOptions)
   DoDemangleOptionsTest(true, true, "fn<3,PV2>__FPC2",
                         "fn<3, volatile __vec2x32float__*>(const __vec2x32float__*)");
 }
-
-
-

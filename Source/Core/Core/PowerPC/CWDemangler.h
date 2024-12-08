@@ -22,10 +22,10 @@ struct DemangleOptions
     mw_extensions = false;
   }
 
-  DemangleOptions(bool omit_empty_parameters, bool mw_extensions)
+  DemangleOptions(bool omit_empty_params, bool mw_exts)
   {
-    this->omit_empty_parameters = omit_empty_parameters;
-    this->mw_extensions = mw_extensions;
+    this->omit_empty_parameters = omit_empty_params;
+    this->mw_extensions = mw_exts;
   }
 };
 
@@ -58,7 +58,6 @@ private:
     return true;
   }
 
-  
   static std::tuple<std::string, std::string, std::string> parse_qualifiers(std::string str);
   static std::optional<std::tuple<int, std::string>> parse_digits(std::string str);
   static std::optional<size_t> find_split(std::string s, bool special, DemangleOptions options);
