@@ -3,7 +3,7 @@
 #include <string>
 #include <tuple>
 
-#include "Core/PowerPC/CWDemangler.h"
+#include "Common/CWDemangler.h"
 
 void DoDemangleTemplateArgsTest(std::string mangled, std::string name, std::string templateArgs)
 {

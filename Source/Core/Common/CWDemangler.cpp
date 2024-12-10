@@ -1,4 +1,4 @@
-#include "Core/PowerPC/CWDemangler.h"
+#include "Common/CWDemangler.h"
 
 #include <cctype>
 #include <map>

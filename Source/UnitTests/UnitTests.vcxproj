@@ -46,6 +46,7 @@
     <ClCompile Include="Common\CommonFuncsTest.cpp" />
     <ClCompile Include="Common\Crypto\EcTest.cpp" />
     <ClCompile Include="Common\Crypto\SHA1Test.cpp" />
+    <ClCompile Include="Common\CWDemanglerTest.cpp" />
     <ClCompile Include="Common\EnumFormatterTest.cpp" />
     <ClCompile Include="Common\EventTest.cpp" />
     <ClCompile Include="Common\FileUtilTest.cpp" />
@@ -71,7 +72,6 @@
     <ClCompile Include="Core\MMIOTest.cpp" />
     <ClCompile Include="Core\PageFaultTest.cpp" />
     <ClCompile Include="Core\PatchAllowlistTest.cpp" />
-    <ClCompile Include="Core\PowerPC\CWDemanglerTest.cpp" />
     <ClCompile Include="Core\PowerPC\DivUtilsTest.cpp" />
     <ClCompile Include="VideoCommon\VertexLoaderTest.cpp" />
     <ClCompile Include="StubHost.cpp" />

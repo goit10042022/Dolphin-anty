@@ -10,7 +10,7 @@
 
 #include "Common/CommonTypes.h"
 #include "Common/Logging/Log.h"
-#include "Core/PowerPC/CWDemangler.h"
+#include "Common/CWDemangler.h"
 
 namespace Common
 {
