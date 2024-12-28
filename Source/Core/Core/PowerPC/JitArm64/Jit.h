@@ -273,11 +273,11 @@ protected:
   // !emitting_routine && mode != AlwaysSlowAccess && !jo.fastmem:                X30
   // !emitting_routine && mode == Auto && jo.fastmem:                             X30
   //
-  // Furthermore, any callee-saved register which isn't marked in gprs_to_push/fprs_to_push
-  // may be clobbered if mode != AlwaysFastAccess.
+  // If there are any other registers that the caller doesn't mind being overwritten,
+  // these can be indicated in scratch_gprs and scratch_fprs.
   void EmitBackpatchRoutine(u32 flags, MemAccessMode mode, Arm64Gen::ARM64Reg RS,
-                            Arm64Gen::ARM64Reg addr, BitSet32 gprs_to_push = BitSet32(0),
-                            BitSet32 fprs_to_push = BitSet32(0), bool emitting_routine = false);
+                            Arm64Gen::ARM64Reg addr, BitSet32 scratch_gprs = BitSet32(0),
+                            BitSet32 scratch_fprs = BitSet32(0), bool emitting_routine = false);
 
   // Loadstore routines
   void SafeLoadToReg(u32 dest, s32 addr, s32 offsetReg, u32 flags, s32 offset, bool update);
