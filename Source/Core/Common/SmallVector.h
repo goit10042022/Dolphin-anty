@@ -40,6 +40,8 @@ public:
   size_t size() const { return m_size; }
   bool empty() const { return m_size == 0; }
 
+  void clear() { m_size = 0; }
+
 private:
   std::array<T, MaxSize> m_array{};
   size_t m_size = 0;
