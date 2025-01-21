@@ -10,7 +10,6 @@
 #include "AudioCommon/CubebStream.h"
 #include "AudioCommon/Mixer.h"
 #include "AudioCommon/NullSoundStream.h"
-#include "AudioCommon/OpenALStream.h"
 #include "AudioCommon/OpenSLESStream.h"
 #include "AudioCommon/PulseAudioStream.h"
 #include "AudioCommon/WASAPIStream.h"
@@ -30,8 +29,6 @@ static std::unique_ptr<SoundStream> CreateSoundStreamForBackend(std::string_view
 {
   if (backend == BACKEND_CUBEB)
     return std::make_unique<CubebStream>();
-  else if (backend == BACKEND_OPENAL && OpenALStream::IsValid())
-    return std::make_unique<OpenALStream>();
   else if (backend == BACKEND_NULLSOUND)
     return std::make_unique<NullSound>();
   else if (backend == BACKEND_ALSA && AlsaSound::IsValid())
@@ -123,8 +120,6 @@ std::vector<std::string> GetSoundBackends()
     backends.emplace_back(BACKEND_ALSA);
   if (PulseAudio::IsValid())
     backends.emplace_back(BACKEND_PULSEAUDIO);
-  if (OpenALStream::IsValid())
-    backends.emplace_back(BACKEND_OPENAL);
   if (OpenSLESStream::IsValid())
     backends.emplace_back(BACKEND_OPENSLES);
   if (WASAPIStream::IsValid())
@@ -135,10 +130,6 @@ std::vector<std::string> GetSoundBackends()
 
 bool SupportsDPL2Decoder(std::string_view backend)
 {
-#ifndef __APPLE__
-  if (backend == BACKEND_OPENAL)
-    return true;
-#endif
   if (backend == BACKEND_CUBEB)
     return true;
   if (backend == BACKEND_PULSEAUDIO)
@@ -148,7 +139,7 @@ bool SupportsDPL2Decoder(std::string_view backend)
 
 bool SupportsLatencyControl(std::string_view backend)
 {
-  return backend == BACKEND_OPENAL || backend == BACKEND_WASAPI;
+  return backend == BACKEND_WASAPI;
 }
 
 bool SupportsVolumeChanges(std::string_view backend)
@@ -156,7 +147,7 @@ bool SupportsVolumeChanges(std::string_view backend)
   // FIXME: this one should ask the backend whether it supports it.
   //       but getting the backend from string etc. is probably
   //       too much just to enable/disable a stupid slider...
-  return backend == BACKEND_CUBEB || backend == BACKEND_OPENAL || backend == BACKEND_WASAPI;
+  return backend == BACKEND_CUBEB || backend == BACKEND_WASAPI;
 }
 
 void UpdateSoundStream(Core::System& system)
