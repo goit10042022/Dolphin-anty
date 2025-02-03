@@ -742,9 +742,9 @@ void AXUCode::HandleMail(u32 mail)
 
   case MailState::WaitingForCmdListAddress:
     CopyCmdList(mail, m_cmdlist_size);
-    HandleCommandList();
-    m_cmdlist_size = 0;
-    SignalWorkEnd();
+    //HandleCommandList();
+    //m_cmdlist_size = 0;
+    //SignalWorkEnd();
     m_mail_state = MailState::WaitingForNextTask;
     break;
 
@@ -809,6 +809,12 @@ void AXUCode::Update()
   if (NeedsResumeMail())
   {
     m_mail_handler.PushMail(DSP_RESUME, true);
+  }
+  else if (m_cmdlist_size)
+  {
+    HandleCommandList();
+    m_cmdlist_size = 0;
+    SignalWorkEnd();
   }
 }
 
