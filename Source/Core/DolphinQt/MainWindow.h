@@ -12,6 +12,7 @@
 #include <string>
 
 #include "Core/Boot/Boot.h"
+#include "Core/HW/Wiimote.h"
 
 class QMenu;
 class QStackedWidget;
@@ -255,7 +256,7 @@ private:
   static constexpr int num_gc_controllers = 4;
   std::array<GCTASInputWindow*, num_gc_controllers> m_gc_tas_input_windows{};
   std::array<GBATASInputWindow*, num_gc_controllers> m_gba_tas_input_windows{};
-  static constexpr int num_wii_controllers = 4;
+  static constexpr int num_wii_controllers = MAX_BBMOTES;
   std::array<WiiTASInputWindow*, num_wii_controllers> m_wii_tas_input_windows{};
 
 #ifdef USE_RETRO_ACHIEVEMENTS
